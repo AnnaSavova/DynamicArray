@@ -41,6 +41,7 @@ public class DynamicArray {
      * Removes the element from the end of the array.
      */
     public void remove(){
+        assert !isEmpty();
         int s = size();
         int[] newArr = new int[s-1];
         for (int i = 0; i < s-1; i++){
@@ -74,6 +75,8 @@ public class DynamicArray {
      */
 
     public void remove(int index){
+        assert !isEmpty();
+        assert Objects.isNull(get(index));
         int s = size();
         int[] newArr = new int[s-1];
 
