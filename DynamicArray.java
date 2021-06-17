@@ -10,8 +10,8 @@ import java.util.Objects;
  */
 
 public class DynamicArray {
-    /** Capacity of the array */
-    protected int size;
+    /** Number of elements in the array */
+    protected int used;
     /** List of values */
     protected int[] elements;
 
@@ -20,21 +20,25 @@ public class DynamicArray {
      *
      * @param size      The capacity of the array
      */
-    public DynamicArray(int size){
-        if (Objects.isNull(size)){
-            this.size = 0;
-        } else{
-            this.size = size;
-        }
+    public DynamicArray(int capacity){
+        assert capacity > 0
+        this.used = 0;
+        elements = new int[capacity];
     }
+
+    public DynamicArray() {
+        this.used = 0;
+        this.elements = null;
+    }
+
 
     /**
      * Adds an element to the end of the array.
      * @param value         element that will be added
      */
     public void add(int value){
-        int s = size();
-        set(s, value);
+        ensureCapacity(used + 1);
+        set(used++, value);
     }
 
     /**
@@ -42,12 +46,7 @@ public class DynamicArray {
      */
     public void remove(){
         assert !isEmpty();
-        int s = size();
-        int[] newArr = new int[s-1];
-        for (int i = 0; i < s-1; i++){
-            newArr[i] = get(i);
-        }
-        this.elements = newArr;
+        --used;
     }
 
     /**
@@ -56,17 +55,15 @@ public class DynamicArray {
      * @param value         element that will be added
      */
     public void add(int index, int value){
-        int s = size();
-        int[] newArr = new int[s+1];
+        assert 0 < index && index < used;
 
-        for (int i = 0; i < index; i++){
-            newArr[i] = get(i);
+        ensureCapacity(used + 1);
+
+        for(int i = index; i < used; ++i) {
+            elements[i+1] = elements[i];
         }
-        newArr[index] = value;
-        for (int i = index+1; i < s+1; i++){
-            newArr[i] = get(i-1);
-        }
-        this.elements = newArr;
+
+        elements[i] = value;
     }
 
     /**
@@ -76,16 +73,27 @@ public class DynamicArray {
 
     public void remove(int index){
         assert !isEmpty();
-        assert Objects.isNull(get(index));
-        int s = size();
-        int[] newArr = new int[s-1];
+        assert 0 < index && index < used;
 
-        for (int i = 0; i < index; i++){
-            newArr[i] = get(i);
+        for(int i = index; i < used-1; ++i)
+            elements[i] = elements[i+1];
+
+        --used;
+    }
+
+    /**
+     * Clone arr to an array of size limit
+     */
+    private cloneArray(int[] arr, int limit)
+    {
+        int[] buffer = new int[limit];
+        int elementsToCopy = min(limit, arr.length);
+
+        for(int i = 0; i < used; ++i) {
+            buffer[i] = arr[i];
         }
-        for (int i = index; i < s-1; i++){
-            newArr[i] = get(i+1);
-        }
+        
+        return arr;
     }
 
     /**
@@ -93,22 +101,30 @@ public class DynamicArray {
      * @param newSize       number of expected element capacity
      */
     public void ensureCapacity(int newSize){
-        this.size = newSize;
+        assert newSize > 0;
+
+        if(Object.isNull(elements)) {
+            elements = new int[newSize];
+        }
+        else if(newSize > elements.length) {
+            elements = cloneArray(elements, max(elements.length * 2, newSize));
+        }
     }
 
     /**
      * Trims down capacity to the number of elements
      */
     public void trimToSize(){
-        this.size = size();
+        if(used < capacity()) {
+            elements = cloneArray(elements, used);
+        }
     }
 
     /**
-     * Returns size of the array:
-     * @return current array size
+     * Returns the number of elements in the array
      */
     public int size(){
-        return elements.length;
+        return used;
     }
 
     /**
@@ -117,7 +133,7 @@ public class DynamicArray {
      * @return array capacity
      */
     public int capacity(){
-        return this.size;
+        return Objects.isNull(elements) ? 0 : elements.length;
     }
 
     /**
@@ -127,23 +143,14 @@ public class DynamicArray {
      *              false if array not empty
      */
     public boolean isEmpty(){
-        int s = size();
-
-        if (Objects.isNull(s) || s <= 0){
-            return true;
-        } else {
-            return false;
-        }
+        return used == 0;
     }
 
     /**
      * Removes all elements from array
      */
     public void clear(){
-        int s = size();
-        for (int i = 0; i < s; i++){
-            remove(s);
-        }
+        used = 0;
     }
 
     // Това беше дадено като войд в занятието но
@@ -156,14 +163,12 @@ public class DynamicArray {
      *                  false if it is not
      */
     public boolean contains(int value){
-        int s = size();
-        boolean contained = false;
-        for (int i=0; i < s; i++){
+        for (int i=0; i < size(); i++){
             if(get(i) == value){
-                contained = true;
+                return true;
             }
         }
-        return contained;
+        return false;
     }
 
     /**
@@ -173,6 +178,9 @@ public class DynamicArray {
      * @return          element at the given index
      */
     public int get(int index){
+        if(index >= used)
+            throw ....; // TODO: throw here
+            
         return this.elements[index];
     }
 
@@ -185,6 +193,9 @@ public class DynamicArray {
      * @return          old value of element
      */
     public int set(int index, int value){
+        if(index >= used)
+            //TODO throw
+
         int old = this.elements[index];
         this.elements[index] = value;
         return old;
