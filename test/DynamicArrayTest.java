@@ -21,30 +21,81 @@ class EmptyDynamicArrayTest {
     public void isEmpty_returnsTrueForEmpty(){
         assert Objects.equals(emptyArr.isEmpty(), true);
     }
+    @Test
+    public void remove_throwsE(){
+        try {
+            emptyArr.remove(1);
+        } catch (Exception e){
+            return;
+        }
+        assert false;
+    }
+    @Test
+    public void get_throwsE(){
+        try {
+            emptyArr.get(2);
+        } catch (Exception e){
+            return;
+        }
+        assert false;
+    }
+    @Test
+    public void set_throwsE(){
+        try {
+            emptyArr.set(3, 12435);
+        } catch(Exception e){
+            return;
+        }
+        assert false;
+    }
+    @Test
+    public void contains_throwsE(){
+        try{
+            emptyArr.contains(5);
+        } catch (Exception e){
+            return;
+        }
+        assert false;
+    }
+    @Test
+    public void clear_noChangeToArr(){
+        emptyArr.clear();
+        assert emptyArr.isEmpty();
+    }
+    @Test
+    public void add_correctlyInserts() throws Exception {
+        emptyArr.add(54923);
+        assert !emptyArr.isEmpty();
+        assert emptyArr.size() == 1;
+        assert emptyArr.capacity() == 2;
+    }
 }
 
 class NonEmptyDynamicArrayTest {
     public DynamicArray dArr = new DynamicArray();
+    public final int elCount = 10;
 
-    for (int i = 0; i < 10; i++){  // не знам защо ми дава грешка.
-        dArr.add(i);
+    public NonEmptyDynamicArrayTest() throws Exception {
+        for (int i = 0; i < elCount; i++){
+            dArr.add(i);
+        }
     }
-
+    // loop for get and set. Two tests per each
     @Test
     public void capacity_returnsCorrectCapacity(){
-        assert dArr.capacity() == i;
+        assert dArr.capacity() == elCount;
     }
     @Test
     public void size_returnsCorrectSize(){
-        assert dArr.size() == i-1;
+        assert dArr.size() == elCount-1;
     }
     @Test
     public void isEmpty_returnsFalseForNonEmpty(){
         assert Objects.equals(dArr.isEmpty(), false);
     }
     @Test
-    public void get_returnsCorrectIndex(){
-        assert dArr.get(i-1) == i-1;
+    public void get_returnsCorrectIndex() throws Exception {
+        assert dArr.get(elCount-1) == elCount-1;
     }
     @Test
     public void trimToSize_trimsCapacity(){

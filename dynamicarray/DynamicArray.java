@@ -31,12 +31,19 @@ public class DynamicArray {
         this.elements = null;
     }
 
+    /**
+     *
+     */
+    private boolean isValidIndex(int index){
+        return (index >= 0 && index <= used);
+    }
+
 
     /**
      * Adds an element to the end of the array.
      * @param value         element that will be added
      */
-    public void add(int value){
+    public void add(int value) throws Exception {
         ensureCapacity(used + 1);
         set(used++, value);
     }
@@ -71,9 +78,10 @@ public class DynamicArray {
      * @param index         the position of the removed element
      */
 
-    public void remove(int index){
-        assert !isEmpty();
-        assert 0 < index && index < used;
+    public void remove(int index) throws Exception {
+        if (isEmpty() || !isValidIndex(index)){
+            throw new Exception();
+        }
 
         for(int i = index; i < used-1; ++i)
             elements[i] = elements[i+1];
@@ -160,7 +168,7 @@ public class DynamicArray {
      * @return          true if element is in array
      *                  false if it is not
      */
-    public boolean contains(int value){
+    public boolean contains(int value) throws Exception {
         for (int i=0; i < size(); i++){
             if(get(i) == value){
                 return true;
@@ -175,8 +183,11 @@ public class DynamicArray {
      * @param index     index of the given element
      * @return          element at the given index
      */
-    public int get(int index){
-        assert index<used;
+    public int get(int index) throws Exception {
+        //assert index<used;
+        if (!isValidIndex(index)){
+            throw new Exception();
+        }
             
         return this.elements[index];
     }
@@ -189,9 +200,12 @@ public class DynamicArray {
      *
      * @return          old value of element
      */
-    public int set(int index, int value){
+    public int set(int index, int value) throws Exception {
         int old = -1;
-        assert index < used;
+        //assert index < used;
+        if ( !isValidIndex(index)) {
+            throw new Exception();
+        }
 
         old = this.elements[index];
         this.elements[index] = value;
