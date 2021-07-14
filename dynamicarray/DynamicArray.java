@@ -61,15 +61,15 @@ public class DynamicArray {
      * @param index         the position of the new element
      * @param value         element that will be added
      */
-    public void add(int index, int value){
-        assert 0 < index && index < used;
-
+    public void add(int index, int value) throws Exception{
+        if (!isValidIndex(index)) {
+            throw new Exception();
+        }
         ensureCapacity(used + 1);
 
         for(int i = index; i < used; ++i) {
             elements[i+1] = elements[i];
         }
-
         elements[index] = value;
     }
 

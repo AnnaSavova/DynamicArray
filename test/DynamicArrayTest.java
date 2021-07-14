@@ -94,8 +94,9 @@ class NonEmptyDynamicArrayTest {
         assert Objects.equals(dArr.isEmpty(), false);
     }
     @Test
-    public void get_returnsCorrectIndex() throws Exception {
-        assert dArr.get(elCount-1) == elCount-1;
+    public void ensureCapacity_altersCapacity(){
+        dArr.ensureCapacity(79);
+        assert dArr.capacity() == 79;
     }
     @Test
     public void trimToSize_trimsCapacity(){
@@ -103,8 +104,42 @@ class NonEmptyDynamicArrayTest {
         assert dArr.size() == dArr.capacity();
     }
     @Test
+    public void add_correctlyInserts() throws Exception {
+        try{
+            dArr.add(2415);
+        } catch (Exception e){
+            return;
+        }
+        assert !dArr.isEmpty();
+        assert dArr.size() == elCount + 1;
+        assert dArr.capacity() >= elCount + 2;
+    }
+    @Test
+    public void remove_throwsE(){
+        try {
+            dArr.remove(3);
+        } catch (Exception e){
+            return;
+        }
+        assert dArr.size() == elCount-1;
+    }
+    @Test
     public void clear_clearsElements(){
         dArr.clear();
         assert dArr.size() == 0;
+    }
+    @Test
+    public void get_returnsCorrectElement() throws Exception {
+        for (int i = 0; i < elCount; i++){
+            assert dArr.get(i) == i;
+        }
+    }
+    @Test
+    public void set_setsCorrectValues() throws Exception {
+        int val = 2347;
+        for (int i = 0; i < elCount; i++){
+            dArr.set(i,val);
+            assert dArr.get(i) == val;
+        }
     }
 }
