@@ -1,6 +1,7 @@
 package test;
 
 import dynamicarray.DynamicArray;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -26,7 +27,7 @@ class EmptyDynamicArrayTest {
     }
     
     @Test
-    public void remove_throwsE(){
+    public void remove_throwsEx(){
         //REVIEW: потърсих за подходящ начин да направим това в JUnit. Преди беше:
         // try {
         //     emptyArr.remove(1);
@@ -39,25 +40,25 @@ class EmptyDynamicArrayTest {
         // но това работи само за JUnit 4
         try {
             emptyArr.remove(1);
-            fail("No exception thrown");
+            Assertions.fail();
         }
-        catch (MyException e) {
+        catch (Exception e) {
         }
     }
 
     //REVIEW: още по-компактен и семантично по-ясен синтаксис за тестове, които
     // очакват да се хвърли изключение. Но е специфичен за JUnit4
-    @Test
-    public void remove_throwsE() throws Exception{
-        exception.expect(Exception.class);
-        emptyArr.remove(1);
-    }
+    //@Test
+    //public void remove_throwsE() throws Exception{
+    //   exception.expect(Exception.class);
+    //    emptyArr.remove(1);
+    //}
 
     @Test
     public void get_throwsE(){
         try {
             emptyArr.get(2);
-            fail("No exception thrown");
+            Assertions.fail("No exception thrown");
         } catch (Exception e){
         }
     }
@@ -65,7 +66,7 @@ class EmptyDynamicArrayTest {
     public void set_throwsE(){
         try {
             emptyArr.set(3, 12435);
-            fail("No exception thrown");
+            Assertions.fail("No exception thrown");
         } catch(Exception e){
         }
     }
@@ -73,7 +74,7 @@ class EmptyDynamicArrayTest {
     public void contains_throwsE(){
         try{
             emptyArr.contains(5);
-            fail("No exception thrown");
+            Assertions.fail("No exception thrown");
         } catch (Exception e){
         }
     }
@@ -108,8 +109,7 @@ class NonEmptyDynamicArrayTest {
     }
 
     /// Ensure that the elements in the array are correctly ordered
-    boolean assertArrayIsCorrectlyOrderedUntil(int limit)
-    {
+    boolean arrayIsCorrectlyOrderedUntil(int limit) throws Exception {
         for(int i = 0; i < limit; ++i) {
             if(dArr.get(i) != i) {
                 return false;
@@ -163,10 +163,10 @@ class NonEmptyDynamicArrayTest {
         assert dArr.size() == elCount + 1;
         assert dArr.capacity() >= elCount + 2;
         assert dArr.get(elCount) == newElem; //REVIEW още един тест, с който гарантираме, че елементът е добавен коректно
-        assert arrayIsCorrectlyOrderedUntil() //REVIEW и още един тест, който гарантира, че другите елементи не са се разместили
+        assert arrayIsCorrectlyOrderedUntil(elCount); //REVIEW и още един тест, който гарантира, че другите елементи не са се разместили
     }
     @Test
-    public void remove_throwsE(){
+    public void remove_throwsE() throws Exception {
         dArr.remove(3);
         assert dArr.size() == elCount-1;
     }
